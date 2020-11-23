@@ -8,7 +8,7 @@ socket.addEventListener('open', function (event) {
     //socket.send(JSON.stringify({'type':'subscribe', 'symbol': 'AAPL'}));
     socket.send(JSON.stringify({'type':'subscribe', 'symbol': 'BINANCE:BTCUSDT'}));
     // socket.send(JSON.stringify({'type':'subscribe', 'symbol': 'IC MARKETS:1'}));
- 
+    //test edit
 });
 
 // Listen for messages
