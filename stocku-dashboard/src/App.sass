@@ -16,21 +16,31 @@ $olive: #538736;
 $night-green: #0e2d1e;
 $lichen: #73b387
 $aloe: #488558
+$midnight: #220B49
+$lavender: #D4B6F6
+$deep-purple: #8C3EE6
+$fuschia: #B32A9A
+$mauve: #7100F6
 
 // Update Bulma's global variables
 $family-sans-serif: 'Nunito', sans-serif;
-$grey-dark: $night-green;
-$grey-light: $aloe;
-$primary: $apple-green;
-$link: $pink;
+$grey-dark: $midnight;
+$grey-light: $deep-purple;
+$danger: $deep-purple;
+$warning: $deep-purple;
+$success: $mauve;
+$primary: $lavender;
+$link: $fuschia;
 $widescreen-enabled: false;
 $fullhd-enabled: false;
 
 // Update some of Bulma's component variables
-$body-background-color: $beige-lighter;
+$body-background-color: $grey-dark;
 $control-border-width: 2px;
 $input-border-color: transparent;
 $input-shadow: none;
+$panel-block-color: white;
+$panel-block-hover-background-color: $deep-purple;
 
 // Import only what you need from Bulma
 @import '../node_modules/bulma/sass/utilities/_all.sass';
@@ -41,6 +51,9 @@ $input-shadow: none;
 @import '../node_modules/bulma/sass/form/_all.sass';
 @import '../node_modules/bulma/sass/elements/title.sass';
 @import '../node_modules/bulma/sass/components/navbar.sass';
+@import '../node_modules/bulma/sass/components/panel.sass';
+@import '../node_modules/bulma/sass/components/modal.sass';
+@import '../node_modules/bulma/sass/components/dropdown.sass';
 @import '../node_modules/bulma/sass/layout/hero.sass';
 @import '../node_modules/bulma/sass/layout/section.sass';
 @import '../node_modules/bulma/sass/grid/tiles.sass';
