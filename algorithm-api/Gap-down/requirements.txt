@@ -1,5 +1,5 @@
 alpaca-trade-api>=0.51.0
-finnhub>=2.3.0
+finnhub-python>=2.3.0
 pandas>=1.2.0
 numpy>=1.19.4
 email-to>=0.1.0
