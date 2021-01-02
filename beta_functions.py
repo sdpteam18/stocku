@@ -179,8 +179,9 @@ def get_slow_stoch(_sym):
     return d
 
 
-def get_bbands(_sym, _time_period, _int, num_std_devs):
+def get_bbands(_sym, _time_period=20, _int='1D', num_std_devs=2):
     avg = get_sma(_sym, _time_period, _int)
+    total = 0
     for i in range(1, _time_period+1):
         close = get_close('AAPL', '1D', i)
         diff = avg - close
@@ -193,6 +194,64 @@ def get_bbands(_sym, _time_period, _int, num_std_devs):
     lower_band = avg - num_std_devs * std_dev
 
     return upper_band, middle_band, lower_band
+
+
+def get_daily_return(_sym):
+    diff = get_close(_sym, '1D', 2) - get_close(_sym, '1D', 1)
+    return diff
+
+
+def crossSecMeanRev():
+    dow = {'MSFT': None,
+           'AAPL': None,
+           'V': None,
+           'JPM': None,
+           'JNJ': None,
+           'WMT': None,
+           'PG': None,
+           'INTC': None,
+           'UNH': None,
+           'HD': None,
+           'DIS': None,
+           'KO': None,
+           'VZ': None,
+           'MRK': None,
+           'PFE': None,
+           'CVX': None,
+           'CSCO': None,
+           'BA': None,
+           'MCD': None,
+           'NKE': None,
+           'IBM': None,
+           'UTX': None,
+           'AXP': None,
+           'MMM': None,
+           'GS': None,
+           'CAT': None,
+           'WBA': None,
+           'DWDP': None,
+           'TRV': None}
+
+    total_returns = 0
+    for i in dow.keys():
+        daily_return = get_daily_return(i)
+        dow[i] = daily_return
+        total_returns += daily_return
+    avg_returns = total_returns / 30
+    sum_diffs = 0
+    for i in dow.keys():
+        # denominator is the sum of all differences between daily return and average return
+        diff = abs(dow[i] - avg_returns)
+        sum_diffs += diff
+    total = 0
+    for i in dow.keys():
+        daily_return = dow[i]
+        weight = - (daily_return - avg_returns) / sum_diffs
+        # reassign value in dow dictionary to the weight needed
+        dow[i] = weight
+        total += weight
+
+    return dow
 
 
 def bs_trading_algo():
@@ -226,9 +285,13 @@ def bs_trading_algo():
     return done
 
 
-print(get_sma('AAPL', 20))
+print(crossSecMeanRev())
+#print(get_sma('AAPL', 20))
 # print(get_ema('AAPL', 50))
-print(get_rsi('AAPL'))
+# print(get_rsi('AAPL'))
+# print(get_fast_stoch('AAPL'))
+# print(get_slow_stoch('AAPL'))
+# print(get_bbands('AAPL'))
 # print(bs_trading_algo())
 #print(get_open('AAPL', '1D', 10))
 #print(get_close('AAPL', '1D', 1))
