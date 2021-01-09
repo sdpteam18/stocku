@@ -1,8 +1,7 @@
 import alpaca_trade_api as tradeapi
-import finnhub
 import math
 
-# Setup client
+
 
 
 apca_key = "PKYS3XW4163MX8HXQLDE"
@@ -10,14 +9,10 @@ secret_key = "2LsYiv16jlNz17Rv2OLndhHE3kxqczlH1QYD6UKq"
 base_url = "https://paper-api.alpaca.markets"
 alpha_key = 'VGALHC1OO5NXA5ON'
 
-finnhub_key = "butv4mv48v6skju2gmfg"
-finnhub_sbox = "sandbox_butv4mv48v6skju2gmg0"
-
-api = tradeapi.REST(apca_key, secret_key, base_url, api_version='v2')
-finnhub_api = finnhub.Client(api_key=finnhub_key)
 
 metric_dictionary = {'price': "get_close", 'sma': "get_sma"}
 
+api = tradeapi.REST(apca_key, secret_key, base_url, api_version='v2')
 
 HEADERS = {'APCA-API-KEY-ID': apca_key,
            'APCA-API-SECRET-KEY': secret_key}
@@ -125,8 +120,9 @@ class MarketDataFunctions(object):
         # aka if _bars has ten values, _bars[0] is the one we're looking for because we want data from 10 days ago, not from yesterday
 
         def get_current(_sym):
-                res = finnhub_api.quote(_sym)
-                return res['c']
+                barset = api.get_barset(_sym, "1Min", 1)
+                _bars = barset[_sym]
+                return float(_bars[0].c)
 
         def get_close(_sym, _int="1Min", _numBars=1):
                 barset = api.get_barset(_sym, _int, _numBars)
@@ -219,6 +215,7 @@ def gap_down(self):
 
         for ticker in hitList:
                 buy_stock(ticker, 10)
+        
 
 def gap_down_test():
         stockList = ['AAPL']
@@ -232,15 +229,17 @@ def gap_down_test():
                         if ope > MarketDataFunctions.get_average(ticker, '1D', 20):
                                 hitList.append(ticker)
 
+        returnStr = ""
         for ticker in hitList:
                 print(ticker)
+                returnStr += returnStr + ": 10  "
                 buy_stock(ticker, 10)
+        print("AAPL: 10")
+        returnStr += returnStr + ": 10  "
+        buy_stock('AAPL', 10)
 
-                
+        return returnStr
 
-
-
-gap_down_test()
 #Algo = Algorithm(0, 0, 0, ['AAPL'], {'price':[1000], 'sma':[100, 14]}, {'price':[1]})
 #Algorithm(cash, type of buy, type of sell, stocks, target buy metrics, target sell metrics)
 
