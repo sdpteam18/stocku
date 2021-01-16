@@ -2,6 +2,7 @@ alpaca-trade-api>=0.51.0
 certifi>=2020.12.5
 chardet>=4.0.0
 click>=7.1.2
+dnspython>=2.1.0
 finnhub-python>=2.3.0
 Flask>=1.1.2
 flask_cors>=3.0.10
