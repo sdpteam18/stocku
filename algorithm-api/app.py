@@ -1,6 +1,5 @@
 from beta_functions import *
 from GapDown import main
-from Gap import *
 import urllib.parse
 import pymongo
 from flask_cors import CORS
@@ -8,10 +7,6 @@ import os
 
 from flask import Flask, jsonify
 from flask import render_template, request
-<< << << < HEAD
-
-== == == =
->>>>>> > 566e533cf6c279b8bb238e3d79c0e64dae2d84a7
 
 username = urllib.parse.quote_plus('Ben')
 password = urllib.parse.quote_plus('MongoPass12')
