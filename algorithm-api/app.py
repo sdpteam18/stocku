@@ -1,13 +1,17 @@
+from beta_functions import *
+from GapDown import main
+from Gap import *
+import urllib.parse
+import pymongo
+from flask_cors import CORS
 import os
 
 from flask import Flask, jsonify
 from flask import render_template, request
-from flask_cors import CORS
-import pymongo
-import urllib.parse
+<< << << < HEAD
 
-from Gap import *
-from beta_functions import *
+== == == =
+>>>>>> > 566e533cf6c279b8bb238e3d79c0e64dae2d84a7
 
 username = urllib.parse.quote_plus('Ben')
 password = urllib.parse.quote_plus('MongoPass12')
@@ -28,19 +32,34 @@ def form():
     return "Use /gap endpoint to launch gap down algorithm with mikes money and /cash to see his balance(checking)"
 
 
+@app.route("/open/<ticker>", methods=['GET'])
+def open(ticker):
+
+    return str(main.MarketDataFunctions.get_open(ticker, "1D", 1))
+
+    # consider base_url /open /AAPL ?interval=1D&num_bars=1
+    # this URL will get us apples open price for "1D"->of a day and it will be today since #bars is 1
+    # AAPL is an HTTP path parameter
+    # ?interval=1D&num_bars=1 are 2 HTTP query parameters
+    # additionally there are HTTP headers which we choose from a predetermined list https://flaviocopes.com/http-request-headers/, used for security and technicalities
+    # and HTTP body which is where convention would keep big pieces of data that need to be saved or read
+
+    # we could easily put the ticker as well as the other query parameters all in the body
+    # but Alpaca keeps it this way and i think its because the body should have like unique data
+
+    # request.args-> query parameters in the format [('interval', '1D'), ('num_bars', '1')]
+    # request.form-> request body format [('body', 'by a singing hitta')]
+    # request.headers-> HTTP headers as string? it seems
+
+
 @app.route("/gap")
 def my_form_post():
-    return gap_down_test()
+    return main.gap_down_test()
 
 
 @app.route("/cash")
 def parallels():
-    return AlpacaUserData.get_balance()
-
-
-@app.route("/open")
-def aapl_open():
-    return get_open('AAPL', '1D', 1)
+    return main.AlpacaUserData.get_balance()
 
 
 @app.route('/find/', methods=['GET'])
