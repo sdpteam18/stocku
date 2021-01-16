@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY . ./
 
-RUN pip install flask gunicorn alpaca-trade-api
+RUN pip install flask gunicorn alpaca-trade-api flask_cors pymongo
 
 CMD gunicorn --bind :$PORT app:app
