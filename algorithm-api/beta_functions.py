@@ -47,7 +47,8 @@ def get_open(_sym, _int, _barsAgo):
     barset = api.get_barset(_sym, _int, _barsAgo)
 
     _bars = barset[_sym]
-    return float(_bars[0].o)
+    # return float(_bars[0].o)
+    return str(_bars[0].o)
     # _bars[0] will return the oldest value in bars, not the most recent for some reason
     # aka if _bars has ten values, _bars[0] is the one we're looking for because we want data from 10 days ago, not from yesterday
 
@@ -201,7 +202,8 @@ def get_daily_return(_sym):
     return diff
 
 
-def crossSecMeanRev():
+def crossSecMeanRev(self):
+    capital = 10000
     dow = {'MSFT': None,
            'AAPL': None,
            'V': None,
@@ -223,13 +225,13 @@ def crossSecMeanRev():
            'MCD': None,
            'NKE': None,
            'IBM': None,
-           'UTX': None,
+           # 'UTX': None,
            'AXP': None,
            'MMM': None,
            'GS': None,
            'CAT': None,
            'WBA': None,
-           'DWDP': None,
+           # 'DWDP': None,
            'TRV': None}
 
     total_returns = 0
@@ -237,19 +239,28 @@ def crossSecMeanRev():
         daily_return = get_daily_return(i)
         dow[i] = daily_return
         total_returns += daily_return
-    avg_returns = total_returns / 30
+    avg_returns = total_returns / 28
     sum_diffs = 0
     for i in dow.keys():
         # denominator is the sum of all differences between daily return and average return
         diff = abs(dow[i] - avg_returns)
         sum_diffs += diff
-    total = 0
     for i in dow.keys():
         daily_return = dow[i]
         weight = - (daily_return - avg_returns) / sum_diffs
         # reassign value in dow dictionary to the weight needed
-        dow[i] = weight
-        total += weight
+        dow[i] = weight*capital
+
+    for i in dow.keys():
+        last_quote = float(api.get_last_quote(i).askprice)
+        numShares = math.floor(abs(dow[i])/last_quote)
+        if numShares > 0:
+            if (dow[i] < 0):
+                buy_stock(i, numShares)
+                #print('buy', i, numShares)
+            else:
+                sell_stock(i, numShares)
+                #print('sell', i, numShares)
 
     return dow
 
@@ -285,7 +296,7 @@ def bs_trading_algo():
     return done
 
 
-print(crossSecMeanRev())
+# crossSecMeanRev(10000)
 #print(get_sma('AAPL', 20))
 # print(get_ema('AAPL', 50))
 # print(get_rsi('AAPL'))
@@ -301,3 +312,4 @@ print(crossSecMeanRev())
 #print(get_average('AAPL', '1Min', 1000))
 # print(get_balance())
 # print(get_portfolio_value())
+print(get_open('AAPL', '1D', 100))
