@@ -58,9 +58,9 @@ def parallels():
 
 
 @app.route("/user/<userId>", methods=['GET'])
-def open(userId):
+def getUser(userId):
     userData = SampleTable.find( {"userId": userId } )
-    if(userData == null):
+    if(userData == None):
         SampleTable.insert_one({ "userId": userId})
         return SampleTable.find( {"userId": userId } )
     else:
