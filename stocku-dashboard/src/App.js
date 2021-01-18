@@ -6,7 +6,7 @@ import './App.sass';
 import Navbar from './components/Navbar/Navbar.js';
 import Grid from './components/Grid/Grid.js';
 import DragNDrop from './components/DragNDrop/DragNDrop.js'
-
+import GridTwo from './components/GridTwo/GridTwo.js';
 
 const finnhub_token = "but9m5v48v6uea8aseag";
 const socket = new WebSocket('wss://ws.finnhub.io?token=but9m5v48v6uea8aseag');
@@ -39,7 +39,6 @@ render() {
     <Navbar></Navbar>
     <main>
     <Grid></Grid>
-    {/* <DragNDrop></DragNDrop> */}
     </main>
     </div>
   );

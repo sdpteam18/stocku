@@ -6,7 +6,7 @@ class Navbar extends Component {
     <div>
 <nav class="navbar" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
-    <a class="navbar-item" href="https://bulma.io">
+    <a class="navbar-item">
       <img src={Logo} width="112" height="28"/>
     </a>
 
@@ -53,10 +53,10 @@ class Navbar extends Component {
     <div class="navbar-end">
       <div class="navbar-item">
         <div class="buttons">
-          <a class="button is-primary">
+          <a class="button is-primary" href="https://stocku-alpaca-oauth.herokuapp.com" target="_blank">
             <strong>Sign up</strong>
           </a>
-          <a class="button is-light">
+          <a class="button is-light" href="https://stocku-alpaca-oauth.herokuapp.com" target="_blank">
             Log in
           </a>
         </div>

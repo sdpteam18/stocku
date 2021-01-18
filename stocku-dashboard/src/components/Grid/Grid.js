@@ -2,7 +2,50 @@ import React, { Component } from "react";
 import StockChart from '../StockChart/StockChart.js' 
 import StockTable from '../StockTable/StockTable.js'
 import AlgoDropdown from '../AlgoDropdown/AlgoDropdown.js'
+import HistoricalStockChart from '../HistoricalStockChart/HistoricalStockChart.js'
 class Grid extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      chartToggleState: false
+    };
+
+    this.toggleChart = this.toggleChart.bind(this);
+  }
+
+  toggleChart() { 
+
+    this.setState((prev, props) => {
+      const newState = !prev.chartToggleState;
+     
+      this.setState({
+        chartToggleState: newState
+      });
+
+    });
+    
+  }
+
+  getAccountInfo() {
+    let search = window.location.search;
+    let params = new URLSearchParams(search);
+    let userToken = params.get('user');
+    
+    userToken === undefined ? alert('Login Please') :
+    console.log(userToken)
+    fetch("https://api.alpaca.markets/v2/account", {
+    headers: {
+      Authorization: "Bearer " + userToken
+    }
+    }).then(response => response.json())
+    .then(data => console.log(data));
+
+  }
+
+  componentDidMount(){
+    this.getAccountInfo();
+  }
+
   render() {
     return (
         <div class="container is-fluid">
@@ -24,8 +67,15 @@ class Grid extends Component {
             <article class="tile is-child notification is-success">
               {/* <p class="title">Middle tile</p>
               <p class="subtitle">With an image</p> */}
+            {this.state.chartToggleState ? 
+            <HistoricalStockChart></HistoricalStockChart>
+             :
+             <div>
              <StockChart></StockChart>
              <div style={{ width: '100%', height: 50 }}></div>
+             </div>
+            }
+            <button className="button is-warning is-inverted" onClick={() => this.toggleChart()}>Toggle Historical Data</button>
             </article>
           </div>
         </div>
