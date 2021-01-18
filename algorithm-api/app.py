@@ -57,6 +57,15 @@ def parallels():
     return main.AlpacaUserData.get_balance()
 
 
+@app.route("/user/<userId>", methods=['GET'])
+def open(userId):
+    userData = SampleTable.find( {"userId": userId } )
+    if(userData == null):
+        SampleTable.insert_one({ "userId": userId})
+        return SampleTable.find( {"userId": userId } )
+    else:
+        return userData
+
 @app.route('/find/', methods=['GET'])
 def findAll():
     query = SampleTable.find()
