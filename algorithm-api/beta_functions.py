@@ -36,6 +36,25 @@ HEADERS = {'APCA-API-KEY-ID': apca_key,
 #
 
 
+def get_balance():
+    account = api.get_account()
+    return account.cash
+
+
+def get_portfolio_value():
+    account = api.get_account()
+    return account.portfolio_value
+
+
+def buy_stock(_sym, _qty):
+    # there are a lot of parameters that we could use, this is just the most basic way to sell whatever quantity of the stock you specified
+    api.submit_order(_sym, _qty, 'buy', 'market', 'day')
+
+
+def sell_stock(_sym, _qty):
+    api.submit_order(_sym, _qty, 'sell', 'market', 'day')
+
+
 def get_open(_sym, _int, _barsAgo):
     # _sym = ticker i.e. 'AAPL
     # _int = duration of one bar i.e. 1MIN, 5MIN, 15MIN, 1D
@@ -47,8 +66,7 @@ def get_open(_sym, _int, _barsAgo):
     barset = api.get_barset(_sym, _int, _barsAgo)
 
     _bars = barset[_sym]
-    # return float(_bars[0].o)
-    return str(_bars[0].o)
+    return float(_bars[0].o)
     # _bars[0] will return the oldest value in bars, not the most recent for some reason
     # aka if _bars has ten values, _bars[0] is the one we're looking for because we want data from 10 days ago, not from yesterday
 
@@ -77,73 +95,45 @@ def get_low(_sym, _int, _barsAgo):
     return float(_bars[0].l)
 
 
-def get_average(_sym, _int, _barsAgo):
-    barset = api.get_barset(_sym, _int, _barsAgo)
-    _bars = barset[_sym]
-    total = 0
-    for i in _bars:
-        total += float(i.c)
-    # assuming average based on close, can be changed later
-    answer = total / _barsAgo
-    return answer
-
-
-def get_balance():
-    account = api.get_account()
-    return account.cash
-
-
-def get_portfolio_value():
-    account = api.get_account()
-    return account.portfolio_value
-
-
-def buy_stock(_sym, _qty):
-    # there are a lot of parameters that we could use, this is just the most basic way to sell whatever quantity of the stock you specified
-    api.submit_order(_sym, _qty, 'buy', 'market', 'day')
-
-
-def sell_stock(_sym, _qty):
-    api.submit_order(_sym, _qty, 'sell', 'market', 'day')
-
-
-def get_sma(_sym, _time_period, _int='1D', _series_type='close'):
-    barset = api.get_barset(_sym, _int, _time_period)
+def get_sma(_sym, _int, _barsAgo, _time_period, _series_type):
+    barset = api.get_barset(_sym, _int, str(int(_barsAgo) + int(_time_period)))
     _bars = barset[_sym]
     total = 0
     for bar in _bars:
         total += float(bar.c)
     # assuming average based on close, can be changed later
-    answer = total / _time_period
+    answer = total / float(_time_period)
     return answer
 
 
-def get_ema(_sym, _time_period, _smoothing=2, _int='1D', _series_type='close'):
-    sma = get_sma(_sym=_sym, _time_period=_time_period,
-                  _int=_int, _series_type=_series_type)
-    mult = 2 / (_time_period + 1)
-    ema = ema_helper(_sym, sma, mult, _int, _time_period, 0)
-    return ema
+# def get_ema(_sym, _time_period, _smoothing=2, _int='1D', _series_type='close'):
+#    sma = get_sma(_sym=_sym, _time_period=_time_period,
+#                  _int=_int, _series_type=_series_type)
+ #   mult = 2 / (_time_period + 1)
+ #   ema = ema_helper(_sym, sma, mult, _int, _time_period, 0)
+ #   return ema
 
 
-def ema_helper(_sym, _sma, _mult, _int, _num_days, _count):
-    if _count == _num_days:
-        emaPrev = _sma
-        # return (get_close(_sym, _int, _num_days-1) - _sma)*_mult + _sma
-        # emaPrev = _sma
-    else:
-        emaPrev = ema_helper(_sym, _sma, _mult, _int, _num_days, _count+1)
+# def ema_helper(_sym, _sma, _mult, _int, _num_days, _count):
+ #   if _count == _num_days:
+  #      emaPrev = _sma
+    # return (get_close(_sym, _int, _num_days-1) - _sma)*_mult + _sma
+    # emaPrev = _sma
+   # else:
+    #   emaPrev = ema_helper(_sym, _sma, _mult, _int, _num_days, _count+1)
     # print(_count)
     # return (get_close(_sym, _int, _num_days-1) - ema_helper(_sym, _sma, _mult, _int, _num_days-1))*_mult + ema_helper(_sym, _sma, _mult, _int, _num_days-1)
-    return (get_close(_sym, _int, _count+1) - emaPrev)*_mult + emaPrev
+    # return (get_close(_sym, _int, _count+1) - emaPrev)*_mult + emaPrev
 
 
-def get_rsi(_sym):
+def get_rsi(_sym, _int, _barsAgo):
     gains = 0
     losses = 0
-    for i in range(1, 15):
-        close = get_close('AAPL', '1D', i)
-        prevClose = get_close('AAPL', '1D', i+1)
+    start = int(_barsAgo) + 1
+    end = start + 14
+    for i in range(start, end):
+        close = get_close(_sym, _int, i)
+        prevClose = get_close(_sym, _int, i+1)
         diff = close - prevClose
         if diff > 0:
             gains += diff
@@ -157,13 +147,15 @@ def get_rsi(_sym):
     return rsi
 
 
-def get_fast_stoch(_sym, _barsAgo=1):
-    close = get_close('AAPL', '1D', _barsAgo)
-    low = get_low('AAPL', '1D', _barsAgo)
-    high = get_high('AAPL', '1D', _barsAgo)
-    for i in range(_barsAgo+1, _barsAgo+14):
-        newLow = get_low('AAPL', '1D', i)
-        newHigh = get_high('AAPL', '1D', i)
+def get_fast_stoch(_sym, _int, _barsAgo):
+    close = get_close(_sym, _int, _barsAgo)
+    low = get_low(_sym, _int, _barsAgo)
+    high = get_high(_sym, _int, _barsAgo)
+    start = int(_barsAgo) + 1
+    end = start + 14
+    for i in range(start, end):
+        newLow = get_low(_sym, _int, i)
+        newHigh = get_high(_sym, _int, i)
         if newLow < low:
             low = newLow
         if newHigh > high:
@@ -172,18 +164,22 @@ def get_fast_stoch(_sym, _barsAgo=1):
     return k
 
 
-def get_slow_stoch(_sym):
+def get_slow_stoch(_sym, _int, _barsAgo):
     k = 0
     for i in range(1, 3):
-        k += get_fast_stoch(_sym, i)
+        k += get_fast_stoch(_sym, _int, i)
     d = k/3
     return d
 
 
-def get_bbands(_sym, _time_period=20, _int='1D', num_std_devs=2):
-    avg = get_sma(_sym, _time_period, _int)
+def get_bbands(_sym, _int, _barsAgo, _time_period, num_std_devs):
+    # time period was 20 default
+    # std_devs was 2 default
+    avg = get_sma(_sym, _int, _barsAgo, _time_period, 'close')
     total = 0
-    for i in range(1, _time_period+1):
+    start = int(_barsAgo) + 1
+    end = start + int(_time_period)
+    for i in range(start, end):
         close = get_close('AAPL', '1D', i)
         diff = avg - close
         diffSquared = diff * diff
@@ -312,4 +308,4 @@ def bs_trading_algo():
 #print(get_average('AAPL', '1Min', 1000))
 # print(get_balance())
 # print(get_portfolio_value())
-print(get_open('AAPL', '1D', 100))
+#print(get_open('AAPL', '1D', 100))
