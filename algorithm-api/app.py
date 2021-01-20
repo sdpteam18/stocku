@@ -48,6 +48,10 @@ def open(ticker):
     # request.form-> request body format [('body', 'by a singing hitta')]
     # request.headers-> HTTP headers as string? it seems
 
+@app.route("/open/<ticker>/<days>")
+def open(ticker, interval):
+    return str(main.MarketDataFunctions.get_open(ticker, "1D", days))
+
 
 @app.route("/gap")
 def my_form_post():
