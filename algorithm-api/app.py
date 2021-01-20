@@ -19,12 +19,13 @@ client = pymongo.MongoClient(connection_url)
 
 Database = client.get_database('test_database')
 
-SampleTable = Database.test_collection
+userTable = Database.Users
+algoTable = Database.Algorithms
 
 
 @app.route("/")
 def form():
-    return "Use /gap endpoint to launch gap down algorithm with mikes money and /cash to see his balance(checking)"
+    return "Use /gap /cash /open/(ticker) "
 
 
 @app.route("/open/<ticker>", methods=['GET'])
@@ -59,16 +60,21 @@ def parallels():
 
 @app.route("/user/<userId>", methods=['GET'])
 def getUser(userId):
-    userData = SampleTable.find( {"userId": userId } )
+    userData = userTable.find_one( {"userID": userId } )
     if(userData == None):
-        SampleTable.insert_one({ "userId": userId})
-        return SampleTable.find( {"userId": userId } )
-    else:
-        return userData
+        userTable.insert_one({ 
+            "userID": userId,
+            "algorithms": []})
+        userData = userTable.find_one( {"userID": userId } )
 
-@app.route('/find/', methods=['GET'])
+    userData.pop('_id')
+ 
+
+    return userData
+
+@app.route('/findAll/', methods=['GET'])
 def findAll():
-    query = SampleTable.find()
+    query = userTable.find()
     output = {}
     i = 0
     for x in query:
@@ -76,6 +82,15 @@ def findAll():
         output[i].pop('_id')
         i += 1
     return jsonify(output)
+
+@app.route('/algo/<algoID>', methods=['GET'])
+def findAlgo(algoID):
+    query = algoTable.find_one({"algoID": algoID})
+    print(query)
+    query = query['algoString']
+    print(query)
+    return jsonify(query)
+
 
 
 if __name__ == "__main__":

@@ -2,8 +2,6 @@ import requests
 from beta_functions import *
 from infixToPostfix import *
 
-response = requests.get('https://equitia-git-po5vn34pmq-ue.a.run.app/find')
-
 # format of one algorithm: "ticker;quantity;buySignal;sellSignal;"
 # example: "AAPL;10;OPEN,1D,1_>_CLOSE,1D,1_*_2;CLOSE,1D,20_<_SMA,10,1D,close;"
 # the same calculations will be done twice in most places, once for the previous bar and once for the current
@@ -264,15 +262,53 @@ def translator(_input):
     return buy_decision, sell_decision
 
 
-def get_algos():
+def get_all_algos():
     # this function gets algos for all users
-    rawData = response.json()
-    for _index in rawData:
-        algos = rawData[_index]['algorithms']
-    return algos
+    response = requests.get('https://equitia-git-po5vn34pmq-ue.a.run.app/find')
+    usersCursor = response.json()
+    print(usersCursor)
+
+    userIDs = getUserIDs(usersCursor) 
+    algoIDs = getAlgoIDs(usersCursor) 
+    algoStrings = getAlgoStrings(algoIDs) 
+
+    #['Mike_user', 'Rohan_user']
+    #['algo1', 'algo2']
+    #['AAPL;10;OPEN,1D,1_>_CLOSE,1D,1_*_2;CLOSE,1D,20_<_SMA,1D,1,10,close;']
+
+    print(userIDs)
+    print(algoIDs)
+    print(algoStrings)
 
 
-algorithms = get_algos()
+
+
+    return algoStrings
+
+def getUserIDs(usersCursor):
+    userIDs = [] #loop gives string for all unique algorithms in the database
+    for userKey in usersCursor: #{'0': {'ID': 'Mike_user', 'algorithms': ['algo1', 'algo2']} we talkin bout the 0 here:
+        userIDs.append(usersCursor[userKey]['userID'])
+    return(userIDs)
+
+def getAlgoIDs(usersCursor):
+    algoIDs = [] #loop gives string for all unique algorithms in the database
+    for userKey in usersCursor: #{'0': {'ID': 'Mike_user', 'algorithms': ['algo1', 'algo2']} we talkin bout the 0 here
+        for algoID in usersCursor[userKey]['algorithms']:
+            if (algoID not in algoIDs):
+                algoIDs.append(algoID)
+    return(algoIDs)
+
+def getAlgoStrings(algoIDs):
+    algoStrings = []
+    for algoID in algoIDs:
+        response = requests.get('http://equitia-git-po5vn34pmq-ue.a.run.app/algo/{}'.format(algoID))
+        algoStrings.append(response.json())
+
+    return algoStrings
+
+
+algorithms = get_all_algos()
 
 for algo in algorithms:
     print('*********************************************************************')
