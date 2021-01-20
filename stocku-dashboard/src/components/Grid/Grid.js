@@ -7,7 +7,10 @@ class Grid extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      chartToggleState: false
+      chartToggleState: false,
+      userData: {},
+      isLoaded: false,
+      error: false,
     };
 
     this.toggleChart = this.toggleChart.bind(this);
@@ -30,15 +33,35 @@ class Grid extends Component {
     let search = window.location.search;
     let params = new URLSearchParams(search);
     let userToken = params.get('user');
-    
+    let proxyUrl = 'https://cors-anywhere.herokuapp.com/'
+
     userToken === undefined ? alert('Login Please') :
     console.log(userToken)
     fetch("https://api.alpaca.markets/v2/account", {
     headers: {
       Authorization: "Bearer " + userToken
     }
-    }).then(response => response.json())
-    .then(data => console.log(data));
+    }).then(response =>{ 
+      let res = response.json()
+      console.log("Alpaca Res: " + res)
+      return res;
+    })
+    .then(data => {
+      console.log(data.id)
+      let userURL = "https://equitia-git-po5vn34pmq-ue.a.run.app/user/" + data.id
+      return fetch(userURL, {headers: { }});
+    })
+    .then(response => {
+      let res = response.json()
+      console.log("Equitia Res: " + res)
+      return res;
+    })
+    .then(data => {
+      this.setState({userData: data, isLoaded: true})
+    })
+    .catch(error => {
+      this.setState({error: true})
+    })
 
   }
 
@@ -47,6 +70,23 @@ class Grid extends Component {
   }
 
   render() {
+    if(!this.state.isLoaded){
+      return (<div>
+              <h1 class="title is-1">Title 1</h1>
+              <progress class="progress is-danger" max="100">30%</progress>
+              </div>
+            );
+      } 
+    else if(!this.state.error){
+      return (<div>
+        <div class="notification is-danger is-light">
+          <button class="delete"></button>
+          <strong>Oops, looks like the devs broke something! Sign in again!</strong>
+        </div>
+        </div>
+      );
+    }
+    else {
     return (
         <div class="container is-fluid">
         <div class="tile is-ancestor">
@@ -104,6 +144,7 @@ class Grid extends Component {
     </div>
     </div>
     );
+    }
   }
 }
 
