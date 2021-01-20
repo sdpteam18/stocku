@@ -29,6 +29,13 @@ class Grid extends Component {
     
   }
 
+
+  getStockInfo() {
+
+  }
+
+
+
   getAccountInfo() {
     let search = window.location.search;
     let params = new URLSearchParams(search);
@@ -57,10 +64,12 @@ class Grid extends Component {
       return res;
     })
     .then(data => {
-      this.setState({userData: data, isLoaded: true})
+      this.setState({userData: JSON.stringify(data), isLoaded: true})
+      console.log("User Data: " + this.state.userData);
     })
     .catch(error => {
       this.setState({error: true})
+      console.log(error);
     })
 
   }
@@ -77,7 +86,7 @@ class Grid extends Component {
               </div>
             );
       } 
-    else if(!this.state.error){
+    else if(this.state.error){
       return (<div>
         <div class="notification is-danger is-light">
           <button class="delete"></button>
@@ -95,7 +104,7 @@ class Grid extends Component {
           <div class="tile is-parent is-vertical">
             <article class="tile is-child notification is-warning">
               <p class="title">Pick A Stock</p>
-              <input class="input is-primary" type="search" placeholder="Search..."></input>
+              <input class="input is-primary" type="search" placeholder="Enter the Stock's Symbol"></input>
             </article>
             {/* <article class="tile is-child notification is-warning">
               <p class="title">Algorithm Maker</p> */}
