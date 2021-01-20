@@ -49,7 +49,7 @@ def open(ticker):
     # request.headers-> HTTP headers as string? it seems
 
 @app.route("/open/<ticker>/<days>")
-def open(ticker, interval):
+def openDays(ticker, interval):
     return str(main.MarketDataFunctions.get_open(ticker, "1D", days))
 
 
