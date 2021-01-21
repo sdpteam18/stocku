@@ -16,6 +16,7 @@ connection_url = 'mongodb+srv://{}:{}@cluster0.xliu9.mongodb.net/test_database?r
     username, password)
 
 app = Flask(__name__)
+CORS(app)
 client = pymongo.MongoClient(connection_url)
 
 Database = client.get_database('test_database')
@@ -48,6 +49,10 @@ def open(ticker):
     # request.form-> request body format [('body', 'by a singing hitta')]
     # request.headers-> HTTP headers as string? it seems
 
+@app.route("/open/<ticker>/<days>")
+def openDays(ticker, interval):
+    return str(main.MarketDataFunctions.get_open(ticker, "1D", days))
+
 
 @app.route("/gap")
 def my_form_post():
@@ -68,9 +73,7 @@ def getUser(userId):
             "algorithms": []})
         userData = userTable.find_one( {"userID": userId } )
 
-    userData.pop('_id')
- 
-
+    userData.pop('_id') #this fixed the mongo cursor object error
     return userData
 
 @app.route('/findAll/', methods=['GET'])
