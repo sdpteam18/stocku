@@ -4,6 +4,7 @@ import urllib.parse
 import pymongo
 from flask_cors import CORS
 import os
+from datetime import datetime
 
 from flask import Flask, jsonify
 from flask import render_template, request
@@ -21,7 +22,7 @@ Database = client.get_database('test_database')
 
 userTable = Database.Users
 algoTable = Database.Algorithms
-
+purchaseTable = Database.Purchases
 
 @app.route("/")
 def form():
@@ -91,7 +92,63 @@ def findAlgo(algoID):
     print(query)
     return jsonify(query)
 
+@app.route('/user/<userID>/purchases', methods=['GET'])
+def findUserPurchases(userID):
+    query = purchaseTable.find({"userID": userID})
+    output = {}
+    i = 0
+    for x in query:
+        output[i] = x
+        output[i].pop('_id')
+        i += 1
+    print(output)
+    return jsonify(output)
 
+@app.route('/algo/<algoID>/purchases', methods=['GET'])
+def findAlgoPurchases(algoID):
+    query = purchaseTable.find({"algoID": algoID})
+    output = {}
+    i = 0
+    for x in query:
+        output[i] = x
+        output[i].pop('_id')
+        i += 1
+    return jsonify(output)
+
+@app.route('/algo/<algoID>/makePurchase', methods=['POST'])
+def makePurchase(algoID):
+    body = request.form
+    #download postman if you havent already
+    #make a post request
+
+    purchaseID = purchaseTable.find()
+    purchaseID = purchaseID.count()
+    purchaseID = "purchase" + str(purchaseID)
+    algoID = body['algoID']
+
+    userID = algoTable.find_one( {"algoID": algoID } )
+    userID = userID['userID']
+
+    ticker = body['ticker']
+    qty = body['qty']
+    price = body['price']
+
+    now = datetime.now()
+
+    time = now.strftime("%d/%m/%Y %H:%M:%S")
+
+    purchaseTable.insert_one({
+        "purchaseID":purchaseID,
+        "algoID":algoID,
+        "userID":userID,
+        "ticker":ticker,
+        "qty":qty,
+        "price":price,
+        "sold":False,
+        "time":time,
+    })
+
+    return "Purchase " + purchaseID + " was stored succesfully"
 
 if __name__ == "__main__":
     app.run()
