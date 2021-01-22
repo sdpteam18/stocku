@@ -69,9 +69,9 @@ def translator(_input):
     buyParts = buySignal.split('_')
     sellParts = sellSignal.split('_')
 
-    print('')
-    print('Buy signal broken into parts:', buyParts)
-    print('Sell signal broken into parts:', sellParts)
+    #print('')
+    #print('Buy signal broken into parts:', buyParts)
+    #print('Sell signal broken into parts:', sellParts)
 
     buy_components = []
     sell_components = []
@@ -116,17 +116,17 @@ def translator(_input):
     sellLeftSide = sell_components[:sellCompIndex]
     sellRightSide = sell_components[sellCompIndex+1:]
 
-    print('')
-    print('Left hand side of previous buy signal in list form', prevBuyLeftSide)
-    print('Right hand side of previous buy signal in list form', prevBuyRightSide)
-    print('Left hand side of previous sell signal in list form', prevSellLeftSide)
-    print('Right hand side of previous sell signal in list form', prevSellRightSide)
+    #print('')
+    #print('Left hand side of previous buy signal in list form', prevBuyLeftSide)
+    #print('Right hand side of previous buy signal in list form', prevBuyRightSide)
+    #print('Left hand side of previous sell signal in list form', prevSellLeftSide)
+    #print('Right hand side of previous sell signal in list form', prevSellRightSide)
 
-    print('')
-    print('Left hand side of buy signal in list form', buyLeftSide)
-    print('Right hand side of buy signal in list form', buyRightSide)
-    print('Left hand side of sell signal in list form', sellLeftSide)
-    print('Right hand side of sell signal in list form', sellRightSide)
+    #print('')
+    #print('Left hand side of buy signal in list form', buyLeftSide)
+    #print('Right hand side of buy signal in list form', buyRightSide)
+    #print('Left hand side of sell signal in list form', sellLeftSide)
+    #print('Right hand side of sell signal in list form', sellRightSide)
 
     # this next step puts all of the elements into a normal equation
     prevBuyLeftSideExp = ''
@@ -155,17 +155,17 @@ def translator(_input):
     for item in sellRightSide:
         sellRightSideExp += (' ' + str(item))
 
-    print('')
-    print('Left hand side of previous buy signal', prevBuyLeftSideExp)
-    print('Right hand side of previous buy signal', prevBuyRightSideExp)
-    print('Left hand side of previous sell signal', prevSellLeftSideExp)
-    print('Right hand side of previous sell signal', prevSellRightSideExp)
+    #print('')
+    #print('Left hand side of previous buy signal', prevBuyLeftSideExp)
+    #print('Right hand side of previous buy signal', prevBuyRightSideExp)
+    #print('Left hand side of previous sell signal', prevSellLeftSideExp)
+    #print('Right hand side of previous sell signal', prevSellRightSideExp)
 
-    print('')
-    print('Left hand side of buy signal', buyLeftSideExp)
-    print('Right hand side of buy signal', buyRightSideExp)
-    print('Left hand side of sell signal', sellLeftSideExp)
-    print('Right hand side of sell signal', sellRightSideExp)
+    #print('')
+    #print('Left hand side of buy signal', buyLeftSideExp)
+    #print('Right hand side of buy signal', buyRightSideExp)
+    #print('Left hand side of sell signal', sellLeftSideExp)
+    #print('Right hand side of sell signal', sellRightSideExp)
 
     # now put them into postfix (I stole like 90% of the postfix conversion code)
     postPrevBuyLeftSideExp = infixToPostfix(prevBuyLeftSideExp)
@@ -178,18 +178,17 @@ def translator(_input):
     postSellLeftSideExp = infixToPostfix(sellLeftSideExp)
     postSellRightSideExp = infixToPostfix(sellRightSideExp)
 
-    print('')
-    print('Left hand side of previous buy signal postfix', postPrevBuyLeftSideExp)
-    print('Right hand side of previous buy signal postfix', postPrevBuyRightSideExp)
-    print('Left hand side of previous sell signal postfix', postPrevSellLeftSideExp)
-    print('Right hand side of previous sell signal postfix',
-          postPrevSellRightSideExp)
+    #print('')
+    #print('Left hand side of previous buy signal postfix', postPrevBuyLeftSideExp)
+    #print('Right hand side of previous buy signal postfix', postPrevBuyRightSideExp)
+    #print('Left hand side of previous sell signal postfix', postPrevSellLeftSideExp)
+    #print('Right hand side of previous sell signal postfix',postPrevSellRightSideExp)
 
-    print('')
-    print('Left hand side of buy signal postfix', postBuyLeftSideExp)
-    print('Right hand side of buy signal postfix', postBuyRightSideExp)
-    print('Left hand side of sell signal postfix', postBuyLeftSideExp)
-    print('Right hand side of sell signal postfix', postSellRightSideExp)
+    #print('')
+    #print('Left hand side of buy signal postfix', postBuyLeftSideExp)
+    #print('Right hand side of buy signal postfix', postBuyRightSideExp)
+    #print('Left hand side of sell signal postfix', postBuyLeftSideExp)
+    #print('Right hand side of sell signal postfix', postSellRightSideExp)
 
     # now evaluate the postfix (also about 90% stolen)
     evalPrevBuyLeftSideExp = postfixEval(postPrevBuyLeftSideExp)
@@ -202,20 +201,17 @@ def translator(_input):
     evalSellLeftSideExp = postfixEval(postSellLeftSideExp)
     evalSellRightSideExp = postfixEval(postSellRightSideExp)
 
-    print('')
-    print('Calculated left hand side of previous buy signal', evalPrevBuyLeftSideExp)
-    print('Calculated right hand side of previous buy signal',
-          evalPrevBuyRightSideExp)
-    print('Calculated left hand side of previous sell signal',
-          evalPrevSellLeftSideExp)
-    print('Calculate right hand side of previous sell signal',
-          evalPrevSellRightSideExp)
+    #print('')
+    #print('Calculated left hand side of previous buy signal', evalPrevBuyLeftSideExp)
+    #print('Calculated right hand side of previous buy signal',evalPrevBuyRightSideExp)
+    #print('Calculated left hand side of previous sell signal',evalPrevSellLeftSideExp)
+    #print('Calculate right hand side of previous sell signal',evalPrevSellRightSideExp)
 
-    print('')
-    print('Calculated left hand side of buy signal', evalBuyLeftSideExp)
-    print('Calculated right hand side of buy signal', evalBuyRightSideExp)
-    print('Calculated left hand side of sell signal', evalSellLeftSideExp)
-    print('Calculate right hand side of sell signal', evalSellRightSideExp)
+    #print('')
+    #print('Calculated left hand side of buy signal', evalBuyLeftSideExp)
+    #print('Calculated right hand side of buy signal', evalBuyRightSideExp)
+    #print('Calculated left hand side of sell signal', evalSellLeftSideExp)
+    #print('Calculate right hand side of sell signal', evalSellRightSideExp)
 
     # finally, compare the results to get your buy and sell signals
 
@@ -226,19 +222,15 @@ def translator(_input):
 
     buy_bool = doMath(buyComp, evalBuyLeftSideExp, evalBuyRightSideExp)
     sell_bool = doMath(sellComp, evalSellLeftSideExp, evalSellRightSideExp)
-    print('')
-    print('Previous buy signal was:', evalPrevBuyLeftSideExp, buyComp,
-          evalPrevBuyRightSideExp, 'which is', prev_buy_bool)
-    print('Previous sell signal was:', evalPrevSellLeftSideExp, sellComp,
-          evalPrevSellRightSideExp, 'which is', prev_sell_bool)
+    #print('')
+    #print('Previous buy signal was:', evalPrevBuyLeftSideExp, buyComp,evalPrevBuyRightSideExp, 'which is', prev_buy_bool)
+    #print('Previous sell signal was:', evalPrevSellLeftSideExp, sellComp,evalPrevSellRightSideExp, 'which is', prev_sell_bool)
 
-    print('')
-    print('Buy signal is:', evalBuyLeftSideExp, buyComp,
-          evalBuyRightSideExp, 'which is', buy_bool)
-    print('Sell signal is:', evalSellLeftSideExp, sellComp,
-          evalSellRightSideExp, 'which is', sell_bool)
-    # print(buy_components)
-    # print(sell_components)
+    #print('')
+    #print('Buy signal is:', evalBuyLeftSideExp, buyComp,evalBuyRightSideExp, 'which is', buy_bool)
+    #print('Sell signal is:', evalSellLeftSideExp, sellComp,evalSellRightSideExp, 'which is', sell_bool)
+    # #print(buy_components)
+    # #print(sell_components)
     #buy_components = signal_decoder(ticker, buyParts)
     #sell_components = signal_decoder(ticker, sellParts)
 
@@ -257,7 +249,7 @@ def translator(_input):
     if buy_decision and sell_decision:
         buy_decision = False
         sell_decision = False
-        print('System wanted to buy and sell; negated')
+        #print('System wanted to buy and sell; negated')
 
     return ticker, quantity, get_close(ticker, '1Min', 1), buy_decision, sell_decision
 
@@ -281,7 +273,7 @@ def get_all_algos():
     # this function gets algos for all users
     response = requests.get('http://equitia-git-po5vn34pmq-ue.a.run.app/algo/findAll')
     usersCursor = response.json()
-    #print(usersCursor)
+    ##print(usersCursor)
 
     #userIDs = getUserIDs(usersCursor) 
     #algoIDs = getAlgoIDs(usersCursor) 
@@ -296,9 +288,9 @@ def get_all_algos():
     #['algo1', 'algo2']
     #['AAPL;10;OPEN,1D,1_>_CLOSE,1D,1_*_2;CLOSE,1D,20_<_SMA,1D,1,10,close;']
 
-    #print(userIDs)
-    #print(algoIDs)
-    #print(algoStrings)
+    ##print(userIDs)
+    ##print(algoIDs)
+    ##print(algoStrings)
 
     return cleanAlgos
 
@@ -324,25 +316,27 @@ def getAlgoStrings(algoIDs):
 
     return algoStrings
 
+def run():
+    algorithms = get_all_algos()
+    ##print(algorithms)
 
-algorithms = get_all_algos()
-print(algorithms)
+    for algoID in algorithms:
+        # #print('*********************************************************************')
+        # #print('**********************************************')
+        # #print('***********************')
+        # #print('')
+        # #print('Raw algorithm:', algorithms[algoID])
+        # #print('')
+        # #print('***********************')
+        # #print('**********************************************')
+        # #print('*********************************************************************')
+        result = translator(algorithms[algoID])
+        # #print('')
+        print('Buy signal for ', algoID, ' on ', result[0], ' is translated as:', result[3])
+        # #print('')
+        print('Sell signal for ', algoID, ' on ', result[0], ' is translated as:', result[4])
+        # #print('')
 
-for algoID in algorithms:
-    print('*********************************************************************')
-    print('**********************************************')
-    print('***********************')
-    print('')
-    print('Raw algorithm:', algorithms[algoID])
-    print('')
-    print('***********************')
-    print('**********************************************')
-    print('*********************************************************************')
-    result = translator(algorithms[algoID])
-    print('')
-    print('Buy signal is translated as:', result[3])
-    print('')
-    print('Sell signal is translated as:', result[4])
-    print('')
+        purchaser(algoID, result)
 
-    purchaser(algoID, result)
+run()
