@@ -76,9 +76,20 @@ def getUser(userId):
     userData.pop('_id') #this fixed the mongo cursor object error
     return userData
 
-@app.route('/findAll/', methods=['GET'])
-def findAll():
+@app.route('/user/findAll/', methods=['GET'])
+def findAllUsers():
     query = userTable.find()
+    output = {}
+    i = 0
+    for x in query:
+        output[i] = x
+        output[i].pop('_id')
+        i += 1
+    return jsonify(output)
+
+@app.route('/algo/findAll/', methods=['GET'])
+def findAllAlgos():
+    query = algoTable.find()
     output = {}
     i = 0
     for x in query:
@@ -122,12 +133,14 @@ def findAlgoPurchases(algoID):
 def makePurchase(algoID):
     body = request.form
     #download postman if you havent already
-    #make a post request
+    #make post requests with body in form
+    #ticker:
+    #qty: (shares)
+    #price: 
 
     purchaseID = purchaseTable.find()
     purchaseID = purchaseID.count()
     purchaseID = "purchase" + str(purchaseID)
-    algoID = body['algoID']
 
     userID = algoTable.find_one( {"algoID": algoID } )
     userID = userID['userID']
@@ -152,6 +165,14 @@ def makePurchase(algoID):
     })
 
     return "Purchase " + purchaseID + " was stored succesfully"
+
+
+#@app.route('/algo/<algoID>/profits', methods=['GET'])
+#def checkProfits(algoID):
+#    purchases = findAlgoPurchases(algoID).json()
+#    for purchase in purchases:
+#        print(purchase)
+#    return 0
 
 if __name__ == "__main__":
     app.run()

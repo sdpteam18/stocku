@@ -259,31 +259,48 @@ def translator(_input):
         sell_decision = False
         print('System wanted to buy and sell; negated')
 
-    return buy_decision, sell_decision
+    return ticker, quantity, get_close(ticker, '1Min', 1), buy_decision, sell_decision
 
+def purchaser(algoID, result):
+    buy_decision = result[3]
+    sell_decision = result[4]
+
+
+    if (buy_decision):
+        body = {
+            "ticker": result[0],
+            "qty": result[1],
+            "price": result[2],
+        }
+        post = requests.post(url = "http://equitia-git-po5vn34pmq-ue.a.run.app/algo/{}/makePurchase".format(algoID), data = body)
+        
+
+        
 
 def get_all_algos():
     # this function gets algos for all users
-    response = requests.get('https://equitia-git-po5vn34pmq-ue.a.run.app/find')
+    response = requests.get('http://equitia-git-po5vn34pmq-ue.a.run.app/algo/findAll')
     usersCursor = response.json()
-    print(usersCursor)
+    #print(usersCursor)
 
-    userIDs = getUserIDs(usersCursor) 
-    algoIDs = getAlgoIDs(usersCursor) 
-    algoStrings = getAlgoStrings(algoIDs) 
+    #userIDs = getUserIDs(usersCursor) 
+    #algoIDs = getAlgoIDs(usersCursor) 
+    #algoStrings = getAlgoStrings(algoIDs) 
+
+    cleanAlgos = {}
+    for x in usersCursor:
+        algoID = usersCursor[x]['algoID']
+        cleanAlgos[algoID] = usersCursor[x]['algoString']
 
     #['Mike_user', 'Rohan_user']
     #['algo1', 'algo2']
     #['AAPL;10;OPEN,1D,1_>_CLOSE,1D,1_*_2;CLOSE,1D,20_<_SMA,1D,1,10,close;']
 
-    print(userIDs)
-    print(algoIDs)
-    print(algoStrings)
+    #print(userIDs)
+    #print(algoIDs)
+    #print(algoStrings)
 
-
-
-
-    return algoStrings
+    return cleanAlgos
 
 def getUserIDs(usersCursor):
     userIDs = [] #loop gives string for all unique algorithms in the database
@@ -309,20 +326,23 @@ def getAlgoStrings(algoIDs):
 
 
 algorithms = get_all_algos()
+print(algorithms)
 
-for algo in algorithms:
+for algoID in algorithms:
     print('*********************************************************************')
     print('**********************************************')
     print('***********************')
     print('')
-    print('Raw algorithm:', algo)
+    print('Raw algorithm:', algorithms[algoID])
     print('')
     print('***********************')
     print('**********************************************')
     print('*********************************************************************')
-    result = translator(algo)
+    result = translator(algorithms[algoID])
     print('')
-    print('Buy signal is translated as:', result[0])
+    print('Buy signal is translated as:', result[3])
     print('')
-    print('Sell signal is translated as:', result[1])
+    print('Sell signal is translated as:', result[4])
     print('')
+
+    purchaser(algoID, result)
