@@ -175,7 +175,7 @@ def createAlgo(userID):
         "algorithm": body,
     })
     
-    return "Algorithm was stored successfully"
+    return {"confirmation": "Algorithm was stored successfully"}
     
 #@app.route('/algo/<algoID>/profits', methods=['GET'])
 #def checkProfits(algoID):
