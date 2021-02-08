@@ -167,6 +167,16 @@ def makePurchase(algoID):
     return "Purchase " + purchaseID + " was stored succesfully"
 
 
+@app.route('/algo/<userID>/create', methods=['POST'])
+def createAlgo(userID):
+    body = request.form
+    algoTable.insert_one({
+        "userID": userID,
+        "algorithm": body,
+    })
+    
+    return "Algorithm was stored successfully"
+    
 #@app.route('/algo/<algoID>/profits', methods=['GET'])
 #def checkProfits(algoID):
 #    purchases = findAlgoPurchases(algoID).json()
