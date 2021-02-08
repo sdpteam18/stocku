@@ -15,8 +15,8 @@ const sendForm = e =>{
   e.preventDefault()
     const data = new FormData(form.current)
     for(const [k,v] of data) {console.log(k,v)}
-    fetch('https://equitia-git-po5vn34pmq-ue.a.run.app/' + userID + '/create', { method: 'POST', body: data })
-      .then(res => console.log(res.json()))
+    fetch('https://equitia-git-po5vn34pmq-ue.a.run.app/algo/' + userID + '/create', { method: 'POST', body: data })
+      .then(res => console.log(res.text()))
       .then(json => console.log(json))
 }
 
@@ -51,7 +51,7 @@ return (
     <input class="input is-success" type="text" placeholder="Stock Name/Symbol" name="user[ticker]" defaultValue=""/>
   </div>
   <div class="control">
-    <a class="button is-info">
+    <a class="button is-success">
       Search
     </a>
   </div>

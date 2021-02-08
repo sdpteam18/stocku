@@ -20,10 +20,12 @@ class AlgoDash extends Component {
   render() {
     return (
     <div class="section">
-    <div class="columns">
+    <div class="columns is-centered">
   
   <div class="column is-one-third">is-one-third</div>
-  <div class="column"><AlgoForm></AlgoForm></div>
+    {/* Add in is-narrow later */}
+  <div class="column "><AlgoForm></AlgoForm></div> 
+
   <div class="column">
   
   
