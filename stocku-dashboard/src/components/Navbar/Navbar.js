@@ -1,8 +1,19 @@
 import React, { Component } from "react";
-import Logo from '../../stocku_logo.png'
+import Logo from '../../stocku_logo.png';
+import Grid from '../Grid/Grid.js';
+
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+
+
 class Navbar extends Component {
   render() {
     return (
+
     <div>
 <nav class="navbar" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
@@ -24,7 +35,11 @@ class Navbar extends Component {
       </a>
 
       <a class="navbar-item">
-        Dashboard
+        <Link to="/">Dashboard</Link>
+      </a>
+      
+      <a class="navbar-item">
+        <Link to="/algorithms">Algorithms</Link>
       </a>
 
       <div class="navbar-item has-dropdown is-hoverable">
@@ -34,7 +49,7 @@ class Navbar extends Component {
 
         <div class="navbar-dropdown">
           <a class="navbar-item">
-            About
+            <Link to="/about">About</Link>
           </a>
           <a class="navbar-item">
             Tutorials
@@ -65,8 +80,12 @@ class Navbar extends Component {
   </div>
 </nav>
 
+       
+
+
 
       </div>
+
     );
   }
 }

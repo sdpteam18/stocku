@@ -3,6 +3,7 @@ import StockChart from '../StockChart/StockChart.js'
 import StockTable from '../StockTable/StockTable.js'
 import AlgoDropdown from '../AlgoDropdown/AlgoDropdown.js'
 import HistoricalStockChart from '../HistoricalStockChart/HistoricalStockChart.js'
+
 class Grid extends Component {
   constructor(props) {
     super(props);
@@ -11,6 +12,8 @@ class Grid extends Component {
       userData: {},
       isLoaded: false,
       error: false,
+      stockSymbol: 'AAPL',
+      stockData: ''
     };
 
     this.toggleChart = this.toggleChart.bind(this);
@@ -28,13 +31,6 @@ class Grid extends Component {
     });
     
   }
-
-
-  getStockInfo() {
-
-  }
-
-
 
   getAccountInfo() {
     let search = window.location.search;
@@ -62,7 +58,7 @@ class Grid extends Component {
       let res = response.json()
       console.log("Equitia Res: " + res)
       return res;
-    })
+    }) 
     .then(data => {
       this.setState({userData: JSON.stringify(data), isLoaded: true})
       console.log("User Data: " + this.state.userData);
@@ -73,6 +69,20 @@ class Grid extends Component {
     })
 
   }
+
+  // setStock(e){
+  //   this.setState({stockSymbol: e.target.value});
+  // }
+
+
+  getStockInfo() {
+    let tickerURL = "https://equitia-git-po5vn34pmq-ue.a.run.app/open/" + this.state.stockSymbol
+    fetch(tickerURL)
+    .then(response => {
+      console.log(this.state.stockSymbol)
+    })
+  }
+
 
   componentDidMount(){
     this.getAccountInfo();
@@ -103,8 +113,19 @@ class Grid extends Component {
         <div class="tile">
           <div class="tile is-parent is-vertical">
             <article class="tile is-child notification is-warning">
-              <p class="title">Pick A Stock</p>
-              <input class="input is-primary" type="search" placeholder="Enter the Stock's Symbol"></input>
+              <p class="title">Search A Stock</p>
+              
+              <div class="field has-addons">
+                <div class="control is-expanded">
+                  <input id="ticker_symbol" class="input" type="text" placeholder="Search a Stock Symbol"/>
+                </div>
+                <div class="control">
+                  <button class="button is-primary">
+                    Search
+                  </button>
+                </div>
+              </div>
+
             </article>
             {/* <article class="tile is-child notification is-warning">
               <p class="title">Algorithm Maker</p> */}
