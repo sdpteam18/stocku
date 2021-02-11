@@ -138,9 +138,8 @@ def makePurchase(algoID):
     #qty: (shares)
     #price: 
 
-    purchaseID = purchaseTable.find()
-    purchaseID = purchaseID.count()
-    purchaseID = "purchase" + str(purchaseID)
+    purchaseCount = purchaseTable.count_documents({})
+    purchaseID = "purchase" + str(purchaseCount)
 
     userID = algoTable.find_one( {"algoID": algoID } )
     userID = userID['userID']
@@ -167,13 +166,29 @@ def makePurchase(algoID):
     return "Purchase " + purchaseID + " was stored succesfully"
 
 
-@app.route('/algo/<userID>/create', methods=['POST'])
+@app.route('/user/<userID>/createAlgo', methods=['POST'])
 def createAlgo(userID):
+    
+    if(userTable.find_one( {"userID": userID }) == None):
+        return {"failure":"Must be signed in to create new algorithms"}
+    
+
+    algoCount = algoTable.count_documents({})
+    algoID = "algo" + str(algoCount)
     body = request.form
     algoTable.insert_one({
         "userID": userID,
-        "algorithm": body,
+        "algoID": algoID,
+        "algoName": body["user[algoName]"],
+        "algoDesc": body["user[algoDesc]"],
+        "ticker": body["user[ticker]"],
+        "sharesNum": body["user[sharesNum]"],
+        "buySignal": body["user[buySignal]"],
+        "sellSignal": body["user[sellSignal]"]
     })
+
+    userTable.update_one({ "userID": userID },
+   { "$push": { "algorithms": algoID } })
     
     return {"confirmation": "Algorithm was stored successfully"}
     
