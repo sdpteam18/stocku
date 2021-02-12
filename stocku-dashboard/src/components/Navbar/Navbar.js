@@ -1,12 +1,23 @@
 import React, { Component } from "react";
-import Logo from '../../stocku_logo.png'
+import Logo from '../../stocku_logo.png';
+import Grid from '../Grid/Grid.js';
+
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+
+
 class Navbar extends Component {
   render() {
     return (
+
     <div>
 <nav class="navbar" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
-    <a class="navbar-item" href="https://bulma.io">
+    <a class="navbar-item">
       <img src={Logo} width="112" height="28"/>
     </a>
 
@@ -24,7 +35,11 @@ class Navbar extends Component {
       </a>
 
       <a class="navbar-item">
-        Dashboard
+        <Link to="/">Dashboard</Link>
+      </a>
+      
+      <a class="navbar-item">
+        <Link to="/algorithms">Algorithms</Link>
       </a>
 
       <div class="navbar-item has-dropdown is-hoverable">
@@ -34,7 +49,7 @@ class Navbar extends Component {
 
         <div class="navbar-dropdown">
           <a class="navbar-item">
-            About
+            <Link to="/about">About</Link>
           </a>
           <a class="navbar-item">
             Tutorials
@@ -53,10 +68,10 @@ class Navbar extends Component {
     <div class="navbar-end">
       <div class="navbar-item">
         <div class="buttons">
-          <a class="button is-primary">
+          <a class="button is-primary" href="https://stocku-alpaca-oauth.herokuapp.com" target="_blank">
             <strong>Sign up</strong>
           </a>
-          <a class="button is-light">
+          <a class="button is-light" href="https://stocku-alpaca-oauth.herokuapp.com" target="_blank">
             Log in
           </a>
         </div>
@@ -65,8 +80,12 @@ class Navbar extends Component {
   </div>
 </nav>
 
+       
+
+
 
       </div>
+
     );
   }
 }

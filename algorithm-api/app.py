@@ -138,8 +138,10 @@ def makePurchase(algoID):
     #qty: (shares)
     #price: 
 
+
     purchaseCount = purchaseTable.count_documents({})
     purchaseID = "purchase" + str(purchaseCount)
+
 
     userID = algoTable.find_one( {"algoID": algoID } )
     userID = userID['userID']

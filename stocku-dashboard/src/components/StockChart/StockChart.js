@@ -125,9 +125,10 @@ useEffect(() => {
     webSocket.current.onmessage = (event) => {
             var res = JSON.parse(event.data)
             //console.log(res.data[0])
+            if(typeof(res.data) !== 'undefined' && res.data !== null){
             setData(currentData => [...currentData, createDataPoint(res.data[0].t,res.data[0].p)])
             console.log(data)
-
+            }
     }
     return () => webSocket.current.close();
 }, [])
@@ -155,7 +156,7 @@ useEffect(() => {
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="time" stroke="white" axisLine={{ stroke: '#FFFFFF' }}/>
         <YAxis type="number" stroke="white" domain={['dataMin', 'dataMax * 0.2']} axisLine={{ stroke: '#FFFFFF' }} />
-        <Tooltip />
+        <Tooltip cursor={{ stroke: 'red', strokeWidth: 2 }} contentStyle={{color:'green'}} itemStyle={{color:'green'}}/>
         <Legend />
         <Line type="linear" dataKey="price" stroke="#FFFFFF" activeDot={{ r: 8 }} strokeWidth={2} />
         <Brush/>
