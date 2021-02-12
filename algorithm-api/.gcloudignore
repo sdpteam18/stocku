@@ -1,0 +1,6 @@
+.gcloudignore
+
+# below:
+.git
+.gitignore
+venv
