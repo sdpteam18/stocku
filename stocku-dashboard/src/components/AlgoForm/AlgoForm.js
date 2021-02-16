@@ -4,6 +4,9 @@ const AlgoForm = props => {
 
 const form = useRef(null)
 const [user, setUser] = useState(props.user)
+const [numBuys, setNumBuys] = useState(1)
+const [numSells, setNumSells] = useState(1)
+const [buyObjs, setBuyObjs] = useState()
 
 let search = window.location.search;
 let params = new URLSearchParams(search);
@@ -84,7 +87,7 @@ return (
 </div>
 
 <div class="field">
-<label class="label">Stock Signal To <strong>Buy</strong> At</label>
+<label class="label">Stock Signals To <strong>Buy</strong> At</label>
 </div>
 <div class="field has-addons">
 <p class="control">
@@ -95,10 +98,15 @@ return (
   <p class="control">
     <input class="input" type="text" placeholder="Signal String" name="user[buySignal]" defaultValue=""/>
   </p>
+  <p class="control">
+    <a class="button">
+      Remove
+    </a>
+  </p>
 </div>
 
 <div class="field">
-<label class="label">Stock Signal To <strong>Sell</strong> At</label>
+<label class="label">Stock Signals To <strong>Sell</strong> At</label>
 </div>
 <div class="field has-addons">
 <p class="control">
@@ -109,6 +117,20 @@ return (
   <p class="control">
     <input class="input" type="text" placeholder="Signal String" name="user[sellSignal]" defaultValue=""/>
   </p>
+  <p class="control">
+    <a class="button">
+      Remove
+    </a>
+  </p>
+</div>
+
+<div class="field is-grouped">
+  <div class="control">
+    <button class="button is-success">Add Buy Signal</button>
+  </div>
+  <div class="control">
+    <button class="button is-success">Add Sell Signal</button>
+  </div>
 </div>
 
 <div class="field">

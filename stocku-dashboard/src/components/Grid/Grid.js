@@ -36,6 +36,7 @@ class Grid extends Component {
     let search = window.location.search;
     let params = new URLSearchParams(search);
     let userToken = params.get('user');
+    localStorage.setItem('userID', userToken);
     let proxyUrl = 'https://cors-anywhere.herokuapp.com/'
 
     userToken === undefined ? alert('Login Please') :

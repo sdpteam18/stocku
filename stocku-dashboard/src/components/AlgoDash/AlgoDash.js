@@ -4,6 +4,7 @@ import StockTable from '../StockTable/StockTable.js'
 import AlgoDropdown from '../AlgoDropdown/AlgoDropdown.js'
 import HistoricalStockChart from '../HistoricalStockChart/HistoricalStockChart.js'
 import AlgoForm from '../AlgoForm/AlgoForm.js'
+import AlgoForm2 from '../AlgoForm2/AlgoForm2.js'
 
 class AlgoDash extends Component {
   constructor(props) {
@@ -24,7 +25,7 @@ class AlgoDash extends Component {
   
   <div class="column is-one-third">is-one-third</div>
     {/* Add in is-narrow later */}
-  <div class="column "><AlgoForm></AlgoForm></div> 
+  <div class="column "><AlgoForm2></AlgoForm2></div> 
 
   <div class="column">
   
