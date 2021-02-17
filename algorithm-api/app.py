@@ -173,11 +173,23 @@ def createAlgo(userID):
     
     if(userTable.find_one( {"userID": userID }) == None):
         return {"failure":"Must be signed in to create new algorithms"}
-    
+        
 
+    body = request.form
     algoCount = algoTable.count_documents({})
     algoID = "algo" + str(algoCount)
-    body = request.form
+    
+
+    buySignals = [body["user[buySignal]"]]
+    sellSignals = [body["user[sellSignal]"]]
+
+    for i in range(1, 4):
+         if ("user[buySignal]" + str(i) in body):
+             buySignals.append(body["user[buySignal]" + str(i)])
+       
+         if ("user[sellSignal]" + str(i) in body):
+             sellSignals.append(body["user[sellSignal]" + str(i)])
+
     algoTable.insert_one({
         "userID": userID,
         "algoID": algoID,
@@ -185,10 +197,12 @@ def createAlgo(userID):
         "algoDesc": body["user[algoDesc]"],
         "ticker": body["user[ticker]"],
         "sharesNum": body["user[sharesNum]"],
-        "buySignal": body["user[buySignal]"],
-        "sellSignal": body["user[sellSignal]"]
+        "buySignals": buySignals,
+        "sellSignals": sellSignals
     })
 
+
+    
     userTable.update_one({ "userID": userID },
    { "$push": { "algorithms": algoID } })
     
