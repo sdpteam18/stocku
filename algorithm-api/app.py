@@ -36,7 +36,7 @@ def open(ticker):
     return str(main.MarketDataFunctions.get_open(ticker, "1D", 1))
 
     # consider base_url /open /AAPL ?interval=1D&num_bars=1
-    # this URL will get us apples open price for "1D"->of a day and it will be today since #bars is 1
+    # this URL will get us apples open bought for "1D"->of a day and it will be today since #bars is 1
     # AAPL is an HTTP path parameter
     # ?interval=1D&num_bars=1 are 2 HTTP query parameters
     # additionally there are HTTP headers which we choose from a predetermined list https://flaviocopes.com/http-request-headers/, used for security and technicalities
@@ -114,6 +114,7 @@ def findUserPurchases(userID):
     for x in query:
         output[i] = x
         output[i].pop('_id')
+        output[i]['profit'] = get_profit(x)
         i += 1
     print(output)
     return jsonify(output)
@@ -126,6 +127,7 @@ def findAlgoPurchases(algoID):
     for x in query:
         output[i] = x
         output[i].pop('_id')
+        output[i]['profit'] = get_profit(x)
         i += 1
     return jsonify(output)
 
@@ -136,7 +138,7 @@ def makePurchase(algoID):
     #make post requests with body in form
     #ticker:
     #qty: (shares)
-    #price: 
+    #bought: 
 
 
     purchaseCount = purchaseTable.count_documents({})
@@ -148,7 +150,7 @@ def makePurchase(algoID):
 
     ticker = body['ticker']
     qty = body['qty']
-    price = body['price']
+    bought = body['bought']
 
     now = datetime.now()
 
@@ -160,12 +162,16 @@ def makePurchase(algoID):
         "userID":userID,
         "ticker":ticker,
         "qty":qty,
-        "price":price,
-        "sold":False,
+        "bought":bought,
+        "sold": -1,
         "time":time,
-    })
+    }) 
+    #currently only updates our database 
+    #add code for brokerage trading below
 
     return "Purchase " + purchaseID + " was stored succesfully"
+
+#@app.route('/algo/<purchaseID>/makeSale', methods=['POST'])
 
 
 @app.route('/user/<userID>/createAlgo', methods=['POST'])
@@ -178,6 +184,7 @@ def createAlgo(userID):
     body = request.form
     algoCount = algoTable.count_documents({})
     algoID = "algo" + str(algoCount)
+    time = now.strftime("%d/%m/%Y %H:%M:%S")
     
 
     buySignals = [body["user[buySignal]"]]
@@ -198,7 +205,8 @@ def createAlgo(userID):
         "ticker": body["user[ticker]"],
         "sharesNum": body["user[sharesNum]"],
         "buySignals": buySignals,
-        "sellSignals": sellSignals
+        "sellSignals": sellSignals,
+        "creationTime": time
     })
 
 
@@ -208,12 +216,34 @@ def createAlgo(userID):
     
     return {"confirmation": "Algorithm was stored successfully"}
     
-#@app.route('/algo/<algoID>/profits', methods=['GET'])
-#def checkProfits(algoID):
-#    purchases = findAlgoPurchases(algoID).json()
-#    for purchase in purchases:
-#        print(purchase)
-#    return 0
+@app.route('/algo/<algoID>/profits', methods=['GET'])
+def checkProfits(algoID):
+    query = purchaseTable.find({"algoID": algoID})
+    profit = 0
+    i = 0
+    
+    for x in query:
+        profit += get_profit(x)
+
+
+        
+    return str(profit)
+
+def get_profit(p_dict):
+    profit = 0
+    bought = float(p_dict['bought'])
+    qty = int(p_dict['qty'])
+
+    profit -= bought * qty
+    if (p_dict['sold'] < 0):
+        #hasn't been sold- use current bought
+        profit += main.MarketDataFunctions.get_current(p_dict['ticker']) * qty
+        
+    else:
+        #has been closed- sell bought stored right here
+        profit += p_dict['sold'] * qty
+    return round(profit, 2)
+
 
 if __name__ == "__main__":
     app.run()
