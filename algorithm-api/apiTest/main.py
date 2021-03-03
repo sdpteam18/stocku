@@ -99,10 +99,11 @@ def signal_interpreter(_signal, _ticker):
 
 def new_translator(_input):
     # print(_input)
-    buy_signals = _input[0]
-    sell_signals = _input[1]
-    numShares = _input[2]
-    ticker = _input[3]
+    algoID = _input[0]
+    buy_signals = _input[1]
+    sell_signals = _input[2]
+    numShares = _input[3]
+    ticker = _input[4]
 
     # iterate through each buy signal and interpret. if any signal is false, iteration of the list gets cut short, otherwise it returns true
     buy_decision = True
@@ -113,14 +114,21 @@ def new_translator(_input):
             buy_decision = False
             break
 
+    buy_decision = (buy_decision and not check_open_purchase(algoID)) #only buy if algorithm has already sold its position
+
+    
+
     # same exact process for sell decision
     sell_decision = True
+
     for signal in sell_signals:
         print("The following will track the interpretation of each sell signal. The list of sell signals will be cut off as soon as \none sell signal is false, as each signal must be true in order to sell.\n")
         print("sell signal:", signal)
         if (not signal_interpreter(signal, ticker)):
             sell_decision = False
             break
+
+    sell_decision = sell_decision and check_open_purchase(algoID)
 
     if sell_decision and buy_decision:
         sell_decision = False
@@ -146,6 +154,17 @@ def purchaser(algoID, buy_decision, sell_decision, numShares, ticker):
         post = requests.post(
             url="http://equitia-git-po5vn34pmq-ue.a.run.app/algo/{}/makePurchase".format(algoID), data=body)
 
+def get_purchases(algoID):
+    return requests.get(
+        url="http://equitia-git-po5vn34pmq-ue.a.run.app//algo/{}/purchases".format(algoID)).json()
+
+def check_open_purchase(algoID):
+    purchaseArray = get_purchases(algoID)
+    for key in purchaseArray:
+        print(purchaseArray[key])
+        if purchaseArray[key]['sold'] < 0:
+            return True
+    return False
 
 def get_all_algos():
     # this function gets algos for all users
@@ -161,7 +180,7 @@ def get_all_algos():
     cleanAlgos = {}
     for user in usersCursor:
         algoID = usersCursor[user]['algoID']
-        cleanAlgos[algoID] = usersCursor[user]['buySignals'], usersCursor[user][
+        cleanAlgos[algoID] = algoID, usersCursor[user]['buySignals'], usersCursor[user][
             'sellSignals'], usersCursor[user]['sharesNum'], usersCursor[user]['ticker']
 
     # ['Mike_user', 'Rohan_user']
@@ -225,8 +244,8 @@ def run():
         print('')
         print(algorithms[algo])
         print('')
-        numShares = algorithms[algo][2]
-        ticker = algorithms[algo][3]
+        numShares = algorithms[algo][3]
+        ticker = algorithms[algo][4]
 
         # returns the decisions to buy and sell
         decisions = new_translator(algorithms[algo])

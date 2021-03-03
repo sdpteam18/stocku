@@ -145,8 +145,7 @@ def makePurchase(algoID):
     purchaseID = "purchase" + str(purchaseCount)
 
 
-    userID = algoTable.find_one( {"algoID": algoID } )
-    userID = userID['userID']
+    userID = algoTable.find_one( {"algoID": algoID } )['userID']
 
     ticker = body['ticker']
     qty = body['qty']
