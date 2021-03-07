@@ -65,6 +65,7 @@ def signal_interpreter(_signal, _ticker):
 
     # determines where the operand is in order to split the string into left and right sides
     # saves what the operand is for later use
+    compIndex = 0
     for i in range(len(components)):
         if components[i] == '>' or components[i] == '<' or components[i] == '=':
             compIndex = i
