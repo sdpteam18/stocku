@@ -247,7 +247,7 @@ def getAlgoStrings(algoIDs):
     return algoStrings
 
 
-def run():
+def run(self):
     print('*')
     print('***')
     print('***********')
@@ -289,7 +289,7 @@ def run():
         session.login(sender_address, sender_pass)
         text = message.as_string()
         session.sendmail(sender_address, receiver_address, text)
-        session.sendmail(sender_address, gross_guy_receiver_address, text)
+        #session.sendmail(sender_address, gross_guy_receiver_address, text)
         session.quit()
 
     print('*')
@@ -304,4 +304,4 @@ def run():
     print('*')
 
 
-run()
+# run()
