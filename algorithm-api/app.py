@@ -25,6 +25,7 @@ userTable = Database.Users
 algoTable = Database.Algorithms
 purchaseTable = Database.Purchases
 
+
 @app.route("/")
 def form():
     return "Use /gap /cash /open/(ticker) "
@@ -49,6 +50,7 @@ def open(ticker):
     # request.form-> request body format [('body', 'by a singing hitta')]
     # request.headers-> HTTP headers as string? it seems
 
+
 @app.route("/open/<ticker>/<days>")
 def openDays(ticker, interval):
     return str(main.MarketDataFunctions.get_open(ticker, "1D", days))
@@ -66,15 +68,16 @@ def parallels():
 
 @app.route("/user/<userId>", methods=['GET'])
 def getUser(userId):
-    userData = userTable.find_one( {"userID": userId } )
+    userData = userTable.find_one({"userID": userId})
     if(userData == None):
-        userTable.insert_one({ 
+        userTable.insert_one({
             "userID": userId,
             "algorithms": []})
-        userData = userTable.find_one( {"userID": userId } )
+        userData = userTable.find_one({"userID": userId})
 
-    userData.pop('_id') #this fixed the mongo cursor object error
+    userData.pop('_id')  # this fixed the mongo cursor object error
     return userData
+
 
 @app.route('/user/findAll/', methods=['GET'])
 def findAllUsers():
@@ -87,6 +90,7 @@ def findAllUsers():
         i += 1
     return jsonify(output)
 
+
 @app.route('/algo/findAll/', methods=['GET'])
 def findAllAlgos():
     query = algoTable.find()
@@ -98,6 +102,7 @@ def findAllAlgos():
         i += 1
     return jsonify(output)
 
+
 @app.route('/algo/<algoID>', methods=['GET'])
 def findAlgo(algoID):
     query = algoTable.find_one({"algoID": algoID})
@@ -105,6 +110,7 @@ def findAlgo(algoID):
     query = query['algoString']
     print(query)
     return jsonify(query)
+
 
 @app.route('/user/<userID>/purchases', methods=['GET'])
 def findUserPurchases(userID):
@@ -119,6 +125,7 @@ def findUserPurchases(userID):
     print(output)
     return jsonify(output)
 
+
 @app.route('/algo/<algoID>/purchases', methods=['GET'])
 def findAlgoPurchases(algoID):
     query = purchaseTable.find({"algoID": algoID})
@@ -131,21 +138,20 @@ def findAlgoPurchases(algoID):
         i += 1
     return jsonify(output)
 
+
 @app.route('/algo/<algoID>/makePurchase', methods=['POST'])
 def makePurchase(algoID):
     body = request.form
-    #download postman if you havent already
-    #make post requests with body in form
-    #ticker:
+    # download postman if you havent already
+    # make post requests with body in form
+    # ticker:
     #qty: (shares)
-    #bought: 
-
+    # bought:
 
     purchaseCount = purchaseTable.count_documents({})
     purchaseID = "purchase" + str(purchaseCount)
 
-
-    userID = algoTable.find_one( {"algoID": algoID } )['userID']
+    userID = algoTable.find_one({"algoID": algoID})['userID']
 
     ticker = body['ticker']
     qty = body['qty']
@@ -156,45 +162,45 @@ def makePurchase(algoID):
     time = now.strftime("%d/%m/%Y %H:%M:%S")
 
     purchaseTable.insert_one({
-        "purchaseID":purchaseID,
-        "algoID":algoID,
-        "userID":userID,
-        "ticker":ticker,
-        "qty":qty,
-        "bought":bought,
+        "purchaseID": purchaseID,
+        "algoID": algoID,
+        "userID": userID,
+        "ticker": ticker,
+        "qty": qty,
+        "bought": bought,
         "sold": -1,
-        "time":time,
-    }) 
-    #currently only updates our database 
-    #add code for brokerage trading below
+        "time": time,
+    })
+    # currently only updates our database
+    # add code for brokerage trading below
 
     return "Purchase " + purchaseID + " was stored succesfully"
 
-#@app.route('/algo/<purchaseID>/makeSale', methods=['POST'])
+# @app.route('/algo/<purchaseID>/makeSale', methods=['POST'])
 
 
 @app.route('/user/<userID>/createAlgo', methods=['POST'])
 def createAlgo(userID):
-    
-    if(userTable.find_one( {"userID": userID }) == None):
-        return {"failure":"Must be signed in to create new algorithms"}
-        
+
+    if(userTable.find_one({"userID": userID}) == None):
+        return {"failure": "Must be signed in to create new algorithms"}
+
+    now = datetime.now()
 
     body = request.form
     algoCount = algoTable.count_documents({})
     algoID = "algo" + str(algoCount)
     time = now.strftime("%d/%m/%Y %H:%M:%S")
-    
 
     buySignals = [body["user[buySignal]"]]
     sellSignals = [body["user[sellSignal]"]]
 
     for i in range(1, 4):
-         if ("user[buySignal]" + str(i) in body):
-             buySignals.append(body["user[buySignal]" + str(i)])
-       
-         if ("user[sellSignal]" + str(i) in body):
-             sellSignals.append(body["user[sellSignal]" + str(i)])
+        if ("user[buySignal]" + str(i) in body):
+            buySignals.append(body["user[buySignal]" + str(i)])
+
+        if ("user[sellSignal]" + str(i) in body):
+            sellSignals.append(body["user[sellSignal]" + str(i)])
 
     algoTable.insert_one({
         "userID": userID,
@@ -208,25 +214,23 @@ def createAlgo(userID):
         "creationTime": time
     })
 
+    userTable.update_one({"userID": userID},
+                         {"$push": {"algorithms": algoID}})
 
-    
-    userTable.update_one({ "userID": userID },
-   { "$push": { "algorithms": algoID } })
-    
     return {"confirmation": "Algorithm was stored successfully"}
-    
+
+
 @app.route('/algo/<algoID>/profits', methods=['GET'])
 def checkProfits(algoID):
     query = purchaseTable.find({"algoID": algoID})
     profit = 0
     i = 0
-    
+
     for x in query:
         profit += get_profit(x)
 
-
-        
     return str(profit)
+
 
 def get_profit(p_dict):
     profit = 0
@@ -235,11 +239,11 @@ def get_profit(p_dict):
 
     profit -= bought * qty
     if (p_dict['sold'] < 0):
-        #hasn't been sold- use current bought
+        # hasn't been sold- use current bought
         profit += main.MarketDataFunctions.get_current(p_dict['ticker']) * qty
-        
+
     else:
-        #has been closed- sell bought stored right here
+        # has been closed- sell bought stored right here
         profit += p_dict['sold'] * qty
     return round(profit, 2)
 
