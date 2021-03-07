@@ -302,6 +302,7 @@ def run(self):
     print('*****')
     print('***')
     print('*')
+    return "it ran."
 
 
 # run()
