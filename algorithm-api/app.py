@@ -70,13 +70,23 @@ def parallels():
 def getUser(userId):
     userData = userTable.find_one({"userID": userId})
     if(userData == None):
-        userTable.insert_one({
-            "userID": userId,
-            "algorithms": []})
-        userData = userTable.find_one({"userID": userId})
+        return "User not found."
 
-    userData.pop('_id')  # this fixed the mongo cursor object error
-    return userData
+@app.route("/user/create", methods=['POST'])
+def createUser():
+    body = request.form
+    if(userTable.find_one({"userID": body['userID']}) != None):
+        return "ERROR: User already exists!"
+    
+
+    userTable.insert_one({
+            "userID": body['userID'],
+            "name": body['name'],
+            "email": body['email'],
+            "algorithms": []})
+        
+    return "user added!"
+    #invoke with body { userID:, name:, email: }
 
 
 @app.route('/user/findAll/', methods=['GET'])
@@ -123,6 +133,20 @@ def findUserPurchases(userID):
         output[i]['profit'] = get_profit(x)
         i += 1
     print(output)
+    return jsonify(output)
+
+@app.route('/user/<userID>/algorithms', methods=['GET'])
+def findUserAlgos(userID):
+    query = userTable.find_one({"userID": userID})
+    algoList = query['algorithms']
+    print(algoList)
+    output = {}
+    i = 0
+    for algoID in algoList:
+        query = algoTable.find_one({"algoID": algoID})
+        query.pop('_id')
+        output[i] = query
+        i+=1
     return jsonify(output)
 
 
