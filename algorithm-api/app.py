@@ -16,7 +16,7 @@ connection_url = 'mongodb+srv://{}:{}@cluster0.xliu9.mongodb.net/test_database?r
     username, password)
 
 app = Flask(__name__)
-CORS(app)
+cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 client = pymongo.MongoClient(connection_url)
 
