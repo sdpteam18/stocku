@@ -142,12 +142,12 @@ def findUserAlgos(userID):
     query = userTable.find_one({"userID": userID})
     algoList = query['algorithms']
     print(algoList)
-    output = {}
+    output = []
     i = 0
     for algoID in algoList:
         query = algoTable.find_one({"algoID": algoID})
         query.pop('_id')
-        output[i] = query
+        output.append(query)
         i+=1
     response = jsonify(output)
 #     response.headers.add('Access-Control-Allow-Origin', '*')
