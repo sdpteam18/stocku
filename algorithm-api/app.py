@@ -17,7 +17,7 @@ connection_url = 'mongodb+srv://{}:{}@cluster0.xliu9.mongodb.net/test_database?r
 
 app = Flask(__name__)
 cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+# app.config['CORS_HEADERS'] = 'Content-Type'
 client = pymongo.MongoClient(connection_url)
 
 Database = client.get_database('test_database')
@@ -150,7 +150,7 @@ def findUserAlgos(userID):
         output[i] = query
         i+=1
     response = jsonify(output)
-    response.headers.add('Access-Control-Allow-Origin', '*')
+#     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
 
