@@ -2,7 +2,7 @@ from beta_functions import *
 from GapDown import main
 import urllib.parse
 import pymongo
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import os
 from datetime import datetime
 
@@ -17,6 +17,7 @@ connection_url = 'mongodb+srv://{}:{}@cluster0.xliu9.mongodb.net/test_database?r
 
 app = Flask(__name__)
 CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 client = pymongo.MongoClient(connection_url)
 
 Database = client.get_database('test_database')
@@ -136,6 +137,7 @@ def findUserPurchases(userID):
     return jsonify(output)
 
 @app.route('/user/<userID>/algorithms', methods=['GET'])
+@cross_origin()
 def findUserAlgos(userID):
     query = userTable.find_one({"userID": userID})
     algoList = query['algorithms']
