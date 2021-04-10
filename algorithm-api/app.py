@@ -149,7 +149,9 @@ def findUserAlgos(userID):
         query.pop('_id')
         output[i] = query
         i+=1
-    return jsonify(output)
+    response = jsonify(output)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 
 @app.route('/algo/<algoID>/purchases', methods=['GET'])
